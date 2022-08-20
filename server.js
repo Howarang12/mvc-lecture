@@ -4,8 +4,9 @@ const app = express()
 const morgan = require('morgan')
 const mongoose = require('mongoose')
 const Blog = require('./models/Blog')
+require('dotenv').config()
 
-const DB_STRING = 'mongodb+srv://howarang:hw122696@cluster0.q1cspqo.mongodb.net/mvc?retryWrites=true&w=majority'
+const DB_STRING = process.env.DB_STRING
 mongoose.connect(DB_STRING, { useNewUrlParser: true, useUnifiedTopology: true})
   .then((result) => {
     console.log('connected to db...')

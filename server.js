@@ -17,6 +17,7 @@ mongoose.connect(DB_STRING, { useNewUrlParser: true, useUnifiedTopology: true})
 app.set('view engine', 'ejs')
 
 app.use(express.static('public'))
+app.use(express.urlencoded({extended: true}))
 app.use(morgan('dev'))
 
 
@@ -30,6 +31,18 @@ app.get('/blogs', async (req, res) => {
 
 })
 
+app.post('/blogs', async (req, res) => {
+  const blog = new Blog(req.body)
+  try{
+    await blog.save()
+    console.log('Blog added')
+    res.redirect('/blogs')
+  } catch (err){
+    console.log(err)
+  }
+  
+})
+
 app.get('/model', (req, res) => {
   res.render('model', {title: 'Model'})
 })
@@ -40,6 +53,10 @@ app.get('/view', (req, res) => {
 
 app.get('/controller', (req, res) => {
   res.render('controller', {title: 'Controller'})
+})
+
+app.get('/create', (req, res) => {
+  res.render('create', {title: 'New Blog'})
 })
 
 app.use((req, res) => {

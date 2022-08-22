@@ -20,10 +20,16 @@ app.use(express.static('public'))
 app.use(express.urlencoded({extended: true}))
 app.use(morgan('dev'))
 
+//fix css loading
+app.get('/blogs/css/style.css', (req, res) => {
+  res.redirect('/css/style.css')
+})
 
 app.get('/', (req, res) => {
   res.redirect('/blogs')
 })
+
+
 
 app.get('/blogs', async (req, res) => {
   let blogs = await Blog.find().sort({createdAt: -1})
@@ -41,6 +47,27 @@ app.post('/blogs', async (req, res) => {
     console.log(err)
   }
   
+})
+
+app.get('/blogs/:id', async (req, res) => {
+  const id = req.params.id
+  try{
+    let blog = await Blog.findById(id)
+    res.render('details' , {title: 'Blog details', blog})
+  } catch (err) {
+    console.log(err)
+  }
+  
+})
+
+app.delete('/blogs/:id', async (req, res) => {
+  const id = req.params.id
+  try{
+    await Blog.findByIdAndDelete(id)
+    res.json({redirect: '/blogs'})
+  } catch (err) {
+    console.log(err)
+  }
 })
 
 app.get('/model', (req, res) => {

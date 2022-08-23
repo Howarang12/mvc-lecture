@@ -15,7 +15,7 @@ const blog_details = async (req, res) => {
     let blog = await Blog.findById(id)
     res.render('details' , {title: 'Blog details', blog})
   } catch (err) {
-    console.log(err)
+    res.status(404).render('404', {title: 'Blog not found'})
   }
 }
 

@@ -3,7 +3,7 @@ const app = express()
 
 const morgan = require('morgan')
 const mongoose = require('mongoose')
-const Blog = require('./models/Blog')
+const blogRoutes = require('./routes/blogRoutes')
 require('dotenv').config()
 
 const DB_STRING = process.env.DB_STRING
@@ -29,46 +29,9 @@ app.get('/', (req, res) => {
   res.redirect('/blogs')
 })
 
+//blog routes
+app.use('/blogs', blogRoutes)
 
-
-app.get('/blogs', async (req, res) => {
-  let blogs = await Blog.find().sort({createdAt: -1})
-  res.render('index', {title: 'All blogs', blogs})
-
-})
-
-app.post('/blogs', async (req, res) => {
-  const blog = new Blog(req.body)
-  try{
-    await blog.save()
-    console.log('Blog added')
-    res.redirect('/blogs')
-  } catch (err){
-    console.log(err)
-  }
-  
-})
-
-app.get('/blogs/:id', async (req, res) => {
-  const id = req.params.id
-  try{
-    let blog = await Blog.findById(id)
-    res.render('details' , {title: 'Blog details', blog})
-  } catch (err) {
-    console.log(err)
-  }
-  
-})
-
-app.delete('/blogs/:id', async (req, res) => {
-  const id = req.params.id
-  try{
-    await Blog.findByIdAndDelete(id)
-    res.json({redirect: '/blogs'})
-  } catch (err) {
-    console.log(err)
-  }
-})
 
 app.get('/model', (req, res) => {
   res.render('model', {title: 'Model'})
